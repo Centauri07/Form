@@ -50,17 +50,6 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
                     return
                 }
             }
-        } ?: run {
-            channel.sendMessage(
-                MessageRequest(
-                    embeds = mutableListOf(
-                        Embed(
-                            "An error occurred when executing this command.",
-                            "Please contact a staff or an administrator."
-                        )
-                    )
-                )
-            )
         }
 
         if (!field.required && !field.chosen) {
