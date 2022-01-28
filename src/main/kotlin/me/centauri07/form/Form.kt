@@ -77,10 +77,11 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
 
         if (!confirmOnFinish) {
             model.onFinish(this)
-            // TODO cache thingy
+
+            FormManager.removeForm(userId)
         } else {
             idle = true
-            // TODO cache thingy
+            FormManager.setAcknowledge(userId)
 
             channel.sendMessage(
                 MessageRequest(
