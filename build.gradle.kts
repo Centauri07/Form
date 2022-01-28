@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.5.31"
     java
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 group = "me.centauri07.form"
