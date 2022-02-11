@@ -1,6 +1,4 @@
-package org.service.cosmo.common.form.field
-
-import me.centauri07.form.field.FormField
+package me.centauri07.form.field
 
 /**
  * @author Centauri07
