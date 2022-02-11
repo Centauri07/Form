@@ -3,7 +3,7 @@ package me.centauri07.form.field.group
 import me.centauri07.form.adapter.message.Embed
 import me.centauri07.form.adapter.message.MessageRequest
 import me.centauri07.form.field.FormField
-import org.service.cosmo.common.form.field.NestableField
+import me.centauri07.form.field.NestableField
 
 /**
  * @author Centauri07
