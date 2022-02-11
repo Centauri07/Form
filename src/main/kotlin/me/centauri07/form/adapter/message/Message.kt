@@ -18,7 +18,7 @@ data class Message(
     val mentionedChannels: List<Channel>? = null,
     val embeds: List<Embed>? = null,
     val buttons: List<Button>? = null,
-    val selectionMenu: SelectionMenu,
+    val selectionMenu: SelectionMenu?,
     val pinned: Boolean
 )
 
