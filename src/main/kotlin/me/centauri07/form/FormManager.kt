@@ -16,7 +16,7 @@ object FormManager {
         }
         .build()
 
-    suspend fun <T: FormModel> createForm(model: T, channel: MessageChannelAdapter, userId: Long, confirmation: Boolean): Form? {
+    fun <T: FormModel> createForm(model: T, channel: MessageChannelAdapter, userId: Long, confirmation: Boolean): Form? {
         if (!hasForm(userId)) {
             Form(model, userId, channel, confirmation).also {
                 forms.put(userId, it)

@@ -38,12 +38,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
                 } else {
                     message = channel.sendMessage(
                         MessageRequest(
-                            embeds = mutableListOf(
-                                Embed(
-                                    "You cannot do that!",
-                                    it.exceptionOrNull()?.message
-                                )
-                            )
+                            embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message))
                         )
                     )
 
@@ -57,11 +52,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
 
             message = channel.sendMessage(
                 MessageRequest(
-                    embeds = mutableListOf(
-                        Embed(
-                            "Do you want to enter ${field.name}?",
-                        )
-                    ),
+                    embeds = mutableListOf(Embed("Do you want to enter ${field.name}?",)),
                     buttons = mutableListOf(field.yesButton, field.noButton)
                 )
             )
@@ -79,6 +70,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             model.onFinish(this)
 
             FormManager.removeForm(userId)
+
         } else {
             idle = true
             FormManager.setAcknowledge(userId)
@@ -86,14 +78,10 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             channel.sendMessage(
                 MessageRequest(
                     embeds = mutableListOf(
-                        Embed(
-                            "Session Finished!",
-                            "Please choose one of the button below whether you want to submit the form or not."
-                        )
+                        Embed("Session Finished!",
+                            "Please choose one of the button below whether you want to submit the form or not.")
                     ),
-                    buttons = mutableListOf(
-                        submitButton, cancelButton
-                    )
+                    buttons = mutableListOf(submitButton, cancelButton)
                 )
             )
         }
@@ -103,10 +91,8 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
         channel.sendMessage(
             MessageRequest(
                 embeds = mutableListOf(
-                    Embed(
-                        "Session has been canceled.",
-                        "You have been inactive for 3 minutes, we're now cancelling this session."
-                    )
+                    Embed("Session has been canceled.",
+                        "You have been inactive for 3 minutes, we're now cancelling this session.")
                 )
             )
         )

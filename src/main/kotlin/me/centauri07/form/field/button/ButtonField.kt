@@ -41,11 +41,7 @@ class ButtonField(name: String, required: Boolean, buttons: List<ButtonChoice>.(
     }
 
     override fun inquire(): MessageRequest = MessageRequest(
-        embeds = mutableListOf(
-            Embed(
-                "$name - Please select one of the button below."
-            )
-        ),
+        embeds = mutableListOf(Embed("$name - Please select one of the button below.")),
         buttons = this.buttons
     )
 

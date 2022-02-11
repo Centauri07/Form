@@ -12,7 +12,7 @@ import org.service.cosmo.common.form.field.NestableField
 open class GroupFormField<T: FormField<*>>(
     name: String? = null,
     required: Boolean = true
-): FormField<MutableList<T>>(), NestableField<T> {
+): FormField<MutableList<T>>(name, required), NestableField<T> {
 
     override var value: MutableList<T>? = null
 
@@ -20,10 +20,8 @@ open class GroupFormField<T: FormField<*>>(
 
     override fun inquire(): MessageRequest = getUnacknowledgedField()?.inquire() ?: MessageRequest(
         embeds = mutableListOf(
-            Embed(
-                "An error occurred when executing this command.",
-                "Please contact a staff or an administrator."
-            )
+            Embed("An error occurred when executing this command.",
+                "Please contact a staff or an administrator.")
         )
     )
 
