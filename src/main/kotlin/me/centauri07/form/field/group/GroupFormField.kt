@@ -8,7 +8,6 @@ import me.centauri07.form.field.NestableField
 /**
  * @author Centauri07
  */
-// TODO make this compatible with required
 open class GroupFormField<T: FormField<*>>(
     name: String? = null,
     required: Boolean = true
@@ -18,17 +17,20 @@ open class GroupFormField<T: FormField<*>>(
 
     override fun call(obj: Any): Result<FormField<*>>? = getUnacknowledgedField()?.call(obj)
 
-    override fun inquire(): MessageRequest = getUnacknowledgedField()?.inquire() ?: MessageRequest(
-        embeds = mutableListOf(
-            Embed("An error occurred when executing this command.",
-                "Please contact a staff or an administrator.")
+    override fun inquire(): MessageRequest {
+        return getUnacknowledgedField()?.inquire() ?: MessageRequest(
+            embeds = mutableListOf(
+                Embed("An error occurred when executing this command.",
+                    "Please contact a staff or an administrator."
+                )
+            )
         )
-    )
+    }
 
     override fun getUnacknowledgedField(): FormField<*>? {
         var currentField: FormField<*>? = value?.find { !it.acknowledged }
 
-        while (currentField != null && currentField is NestableField<*>) {
+        while (currentField != null && currentField is NestableField<*> && currentField.required) {
             val field = currentField.getUnacknowledgedField()
 
             if (field == null) {
@@ -37,6 +39,7 @@ open class GroupFormField<T: FormField<*>>(
                 currentField = value?.find { !it.acknowledged }
 
             } else currentField = field
+
         }
 
         return currentField
