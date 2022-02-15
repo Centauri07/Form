@@ -7,13 +7,13 @@ import java.lang.ClassCastException
 /**
  * @author Centauri07
  */
-abstract class OptionField<T>(name: String? = null, required: Boolean = true, options: List<T>.() -> Unit): FormField<T>(name, required) {
+abstract class OptionField<T>(name: String? = null, required: Boolean = true, options: MutableList<T>.() -> Unit): FormField<T>(name, required) {
     override var value: T? = null
 
     protected val options: List<T>
 
     init {
-        val optionChoices = listOf<T>()
+        val optionChoices = mutableListOf<T>()
         options(optionChoices)
 
         this.options = optionChoices
