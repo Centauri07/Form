@@ -24,5 +24,7 @@ abstract class FormField<T>(val name: String? = null, val required: Boolean = tr
 
     abstract fun inquire(): MessageRequest
 
+    fun validate(validator: T.() -> Boolean, errMessage: String) = validators.add(Validator(validator, errMessage))
+
     class Validator<T>(val validator: T.() -> Boolean, val message: String)
 }
