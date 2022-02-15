@@ -7,6 +7,8 @@ import me.centauri07.form.adapter.message.MessageRequest
 import me.centauri07.form.adapter.message.component.button.Button
 import me.centauri07.form.adapter.message.component.button.ButtonType
 import me.centauri07.form.field.FormField
+import me.centauri07.form.util.Message
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Centauri07
@@ -23,8 +25,14 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
         model.setup(this)
     }
 
-    fun call(obj: Any? = null) {
+    fun call(message: MessageAdapter? = null, obj: Any? = null) {
         if (idle) return
+
+        try {
+            message?.delete()
+        } catch (e: Exception) {
+            // IGNORE
+        }
 
         var field: FormField<*> = model.getUnacknowledgedField() ?: run { finish();return }
 
@@ -36,23 +44,25 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
 
                     field = model.getUnacknowledgedField() ?: run { finish(); return }
                 } else {
-                    message = channel.sendMessage(
-                        MessageRequest(
-                            embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message))
-                        )
-                    )
+                    idle = true
+
+                    Message.sendOrEdit(message, channel, MessageRequest(
+                        embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message))
+                    )).editAfter(3, TimeUnit.SECONDS, field.inquire()).let { messageAdapter ->
+                        this.message = messageAdapter
+                    }
 
                     return
                 }
-            }
+            } ?: return
         }
 
         if (!field.required && !field.chosen) {
             idle = true
 
-            message = channel.sendMessage(
-                MessageRequest(
-                    embeds = mutableListOf(Embed("Do you want to enter ${field.name}?",)),
+            this.message = Message.sendOrEdit(
+                message, channel, MessageRequest(
+                    embeds = mutableListOf(Embed("Do you want to enter ${field.name}?")),
                     buttons = mutableListOf(field.yesButton, field.noButton)
                 )
             )
@@ -60,7 +70,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             return
         }
 
-        message = channel.sendMessage(field.inquire())
+        this.message = Message.sendOrEdit(message, channel, field.inquire())
     }
 
     fun finish() {
@@ -68,15 +78,13 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
 
         if (!confirmOnFinish) {
             model.onFinish(this)
-
             FormManager.removeForm(userId)
-
         } else {
             idle = true
             FormManager.setAcknowledge(userId)
 
-            channel.sendMessage(
-                MessageRequest(
+            Message.sendOrEdit(
+                message, channel, MessageRequest(
                     embeds = mutableListOf(
                         Embed("Session Finished!",
                             "Please choose one of the button below whether you want to submit the form or not.")
@@ -88,8 +96,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
     }
 
     fun expire() {
-        channel.sendMessage(
-            MessageRequest(
+        Message.sendOrEdit(message, channel, MessageRequest(
                 embeds = mutableListOf(
                     Embed("Session has been canceled.",
                         "You have been inactive for 3 minutes, we're now cancelling this session.")
