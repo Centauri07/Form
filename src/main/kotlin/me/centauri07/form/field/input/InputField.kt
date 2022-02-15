@@ -20,9 +20,9 @@ class InputField<T>(tClass: Class<T>, name: String, required: Boolean): FormFiel
     override var value: T? = null
 
     override fun call(obj: Any): Result<FormField<T>>? {
-        if (obj !is Message) return null
+        if (obj !is String) return null
 
-        val result = reader?.read(obj.content, validators)
+        val result = reader?.read(obj, validators)
 
         return if (result?.isSuccess == true) {
             value = result.getOrNull()
