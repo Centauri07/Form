@@ -7,7 +7,6 @@ import me.centauri07.form.adapter.message.MessageRequest
 import me.centauri07.form.adapter.message.component.button.Button
 import me.centauri07.form.adapter.message.component.button.ButtonType
 import me.centauri07.form.field.FormField
-import me.centauri07.form.util.Message
 import java.util.concurrent.TimeUnit
 
 /**
@@ -34,7 +33,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             // IGNORE
         }
 
-        var field: FormField<*> = model.getUnacknowledgedField() ?: run { finish();return }
+        var field: FormField<*> = model.getUnacknowledgedField() ?: run { finish(); return }
 
         obj?.let {
             field.call(obj)?.let {
@@ -46,11 +45,12 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
                 } else {
                     idle = true
 
-                    Message.sendOrEdit(message, channel, MessageRequest(
+                    sendOrEdit(message, channel, MessageRequest(
                         embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message))
-                    )).editAfter(3, TimeUnit.SECONDS, field.inquire()).let { messageAdapter ->
-                        this.message = messageAdapter
-                    }
+                    )).editAfter(3, TimeUnit.SECONDS, field.inquire()).let { run {
+                        this.idle = false
+                        call()
+                    } }
 
                     return
                 }
@@ -60,7 +60,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
         if (!field.required && !field.chosen) {
             idle = true
 
-            this.message = Message.sendOrEdit(
+            sendOrEdit(
                 message, channel, MessageRequest(
                     embeds = mutableListOf(Embed("Do you want to enter ${field.name}?")),
                     buttons = mutableListOf(field.yesButton, field.noButton)
@@ -70,7 +70,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             return
         }
 
-        this.message = Message.sendOrEdit(message, channel, field.inquire())
+        sendOrEdit(message, channel, field.inquire())
     }
 
     fun finish() {
@@ -83,7 +83,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             idle = true
             FormManager.setAcknowledge(userId)
 
-            Message.sendOrEdit(
+            sendOrEdit(
                 message, channel, MessageRequest(
                     embeds = mutableListOf(
                         Embed("Session Finished!",
@@ -96,7 +96,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
     }
 
     fun expire() {
-        Message.sendOrEdit(message, channel, MessageRequest(
+        sendOrEdit(message, channel, MessageRequest(
                 embeds = mutableListOf(
                     Embed("Session has been canceled.",
                         "You have been inactive for 3 minutes, we're now cancelling this session.")
@@ -105,5 +105,13 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
         )
 
         model.onExpire(this)
+    }
+
+    fun sendOrEdit(message: MessageAdapter?, channelAdapter: MessageChannelAdapter, messageRequest: MessageRequest): MessageAdapter {
+        return try {
+            message?.edit(messageRequest) ?: channelAdapter.sendMessage(messageRequest)
+        } catch (e: Exception) {
+            channelAdapter.sendMessage(messageRequest)
+        }
     }
 }
