@@ -1,4 +1,4 @@
-package me.centauri07.form.adapter.message.component.button
+package me.centauri07.form.adapter.message.component.selection
 
 /**
  * @author Centauri07
@@ -6,12 +6,12 @@ package me.centauri07.form.adapter.message.component.button
 data class SelectionMenu(
     val id: String,
     val placeholder: String,
-    val options: MutableList<SelectionOption>
+    val options: List<SelectionOption>,
 )
 
 data class SelectionOption(
     val label: String,
     val value: String,
-    val description: String,
-    val emoji: String
+    val description: String? = null,
+    val emoji: String? = null
 )
