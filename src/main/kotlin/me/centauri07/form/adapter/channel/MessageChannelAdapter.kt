@@ -1,9 +1,9 @@
 package me.centauri07.form.adapter.channel
 
 import me.centauri07.form.adapter.message.Channel
-import me.centauri07.form.adapter.message.Message
 import me.centauri07.form.adapter.message.MessageAdapter
 import me.centauri07.form.adapter.message.MessageRequest
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Centauri07
@@ -13,9 +13,9 @@ interface MessageChannelAdapter {
 
     fun sendMessage(message: MessageRequest): MessageAdapter
 
-    fun editMessageById(id: Long, replacement: MessageRequest): MessageAdapter
+    fun editMessageById(id: Long, replacement: MessageRequest): MessageAdapter?
 
-    fun deleteMessageById(id: Long, replacement: MessageRequest): MessageAdapter
+    fun deleteMessageById(id: Long, replacement: MessageRequest)
 
     fun getMessageById(id: Long): MessageAdapter
 }
