@@ -1,7 +1,7 @@
 package me.centauri07.form.adapter.message
 
 import me.centauri07.form.adapter.message.component.button.Button
-import me.centauri07.form.adapter.message.component.button.SelectionMenu
+import me.centauri07.form.adapter.message.component.selection.SelectionMenu
 import java.awt.Color
 
 /**
@@ -18,7 +18,7 @@ data class Message(
     val mentionedChannels: List<Channel>? = null,
     val embeds: List<Embed>? = null,
     val buttons: List<Button>? = null,
-    val selectionMenu: SelectionMenu?,
+    val selectionMenu: SelectionMenu? = null,
     val pinned: Boolean
 )
 
