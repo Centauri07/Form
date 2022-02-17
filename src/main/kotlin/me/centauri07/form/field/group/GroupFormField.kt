@@ -10,10 +10,18 @@ import me.centauri07.form.field.NestableField
  */
 open class GroupFormField<T: FormField<*>>(
     name: String? = null,
-    required: Boolean = true
+    required: Boolean = true,
+    fields: MutableList<T>.() -> Unit
 ): FormField<MutableList<T>>(name, required), NestableField<T> {
 
-    override var value: MutableList<T>? = null
+    final override var value: MutableList<T>? = null
+
+    init {
+        mutableListOf<T>().let {
+            fields(it)
+            it.forEach { field -> add(field) }
+        }
+    }
 
     override fun call(obj: Any): Result<FormField<*>>? = getUnacknowledgedField()?.call(obj)
 
