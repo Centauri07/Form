@@ -6,7 +6,7 @@ import me.centauri07.form.field.group.GroupFormField
 /**
  * @author Centauri07
  */
-abstract class FormModel(name: String): GroupFormField<FormField<*>>(name) {
+abstract class FormModel(name: String): GroupFormField<FormField<*>>(name, true, { }) {
 
     abstract fun setup(form: Form)
 
