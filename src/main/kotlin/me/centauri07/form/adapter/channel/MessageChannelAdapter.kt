@@ -15,7 +15,7 @@ interface MessageChannelAdapter {
 
     fun editMessageById(id: Long, replacement: MessageRequest): MessageAdapter?
 
-    fun deleteMessageById(id: Long, replacement: MessageRequest)
+    fun deleteMessageById(id: Long)
 
     fun getMessageById(id: Long): MessageAdapter
 }
