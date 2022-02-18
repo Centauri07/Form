@@ -104,10 +104,14 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
     }
 
     fun sendOrEdit(message: MessageAdapter?, channelAdapter: MessageChannelAdapter, messageRequest: MessageRequest): MessageAdapter {
-        return try {
+        val msg =  try {
             message?.edit(messageRequest) ?: channelAdapter.sendMessage(messageRequest)
         } catch (e: Exception) {
             channelAdapter.sendMessage(messageRequest)
         }
+
+        this.message = msg
+
+        return msg
     }
 }
