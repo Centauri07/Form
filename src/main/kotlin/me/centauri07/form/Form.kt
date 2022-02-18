@@ -45,7 +45,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
                 } else {
                     idle = true
 
-                    sendOrEdit(message, channel, MessageRequest(
+                    sendOrEdit(this.message, channel, MessageRequest(
                         embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message))
                     )).editAfter(3, TimeUnit.SECONDS, field.inquire()).let { run {
                         idle = false
@@ -62,7 +62,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             idle = true
 
             sendOrEdit(
-                message, channel, MessageRequest(
+                this.message, channel, MessageRequest(
                     embeds = mutableListOf(Embed("Do you want to enter ${field.name}?")),
                     buttons = mutableListOf(field.yesButton, field.noButton)
                 )
@@ -71,13 +71,13 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
             return
         }
 
-        sendOrEdit(message, channel, field.inquire())
+        sendOrEdit(this.message, channel, field.inquire())
     }
 
-    fun finish() {
+    fun finish(submitOnFinish: Boolean = model.submitOnFinish) {
         if (idle) return
 
-        if (!model.submitOnFinish) {
+        if (submitOnFinish) {
             model.onFinish(this)
             FormManager.removeForm(userId)
         } else {
