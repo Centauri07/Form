@@ -13,12 +13,13 @@ abstract class OptionField<T>(name: String? = null, required: Boolean = true, op
     protected val options: List<T>
 
     init {
-        val optionChoices = mutableListOf<T>()
-        options(optionChoices)
+        mutableListOf<T>().let { list ->
+            options.let {
+                it.invoke(list)
 
-        this.options = optionChoices
-
-        if (this.options.isEmpty()) throw IllegalStateException("Options cannot be empty!")
+                this.options = list
+            }
+        }
     }
 
     override fun call(obj: Any): Result<FormField<*>>? {

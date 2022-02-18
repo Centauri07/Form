@@ -11,15 +11,18 @@ import me.centauri07.form.field.NestableField
 open class GroupFormField<T: FormField<*>>(
     name: String? = null,
     required: Boolean = true,
-    fields: MutableList<T>.() -> Unit
+    fields: (MutableList<T>.() -> Unit)?
 ): FormField<MutableList<T>>(name, required), NestableField<T> {
 
     final override var value: MutableList<T>? = null
 
     init {
-        mutableListOf<T>().let {
-            fields(it)
-            it.forEach { field -> add(field) }
+        mutableListOf<T>().let { list ->
+            fields?.let {
+                it.invoke(list)
+
+                value = list
+            }
         }
     }
 
