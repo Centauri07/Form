@@ -16,9 +16,9 @@ object FormManager {
         }
         .build()
 
-    fun <T: FormModel> createForm(model: T, channel: MessageChannelAdapter, userId: Long, confirmation: Boolean): Form? {
+    fun <T: FormModel> createForm(model: T, channel: MessageChannelAdapter, userId: Long): Form? {
         if (!hasForm(userId)) {
-            Form(model, userId, channel, confirmation).also {
+            Form(model, userId, channel).also {
                 forms.put(userId, it)
                 it.call()
             }
@@ -32,6 +32,8 @@ object FormManager {
     }
 
     fun getForm(id: Long): Form? {
+        if (!hasForm(id)) return null
+
         return forms.getIfPresent(id)
     }
 

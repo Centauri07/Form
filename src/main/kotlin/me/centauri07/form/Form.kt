@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author Centauri07
  */
-class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAdapter, val confirmOnFinish: Boolean) {
+class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAdapter) {
     var idle: Boolean = false
 
     var submitButton: Button = Button(ButtonType.SUCCESS, "form-submit", "✅ Submit")
@@ -48,7 +48,8 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
                     sendOrEdit(message, channel, MessageRequest(
                         embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message))
                     )).editAfter(3, TimeUnit.SECONDS, field.inquire()).let { run {
-                        this.idle = false
+                        idle = false
+                        this.message = it
                         call()
                     } }
 
@@ -76,7 +77,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
     fun finish() {
         if (idle) return
 
-        if (!confirmOnFinish) {
+        if (!model.submitOnFinish) {
             model.onFinish(this)
             FormManager.removeForm(userId)
         } else {
