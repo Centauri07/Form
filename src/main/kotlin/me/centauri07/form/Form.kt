@@ -96,16 +96,10 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
         }
     }
 
-    fun expire() {
-        sendOrEdit(message, channel, MessageRequest(
-                embeds = mutableListOf(
-                    Embed("Session has been canceled.",
-                        "You have been inactive for 3 minutes, we're now cancelling this session.")
-                )
-            )
-        )
+    fun cancel(reason: String?) {
+        sendOrEdit(message, channel, MessageRequest(embeds = mutableListOf(Embed("Session has been canceled.", reason))))
 
-        model.onExpire(this)
+        FormManager.removeForm(userId)
     }
 
     fun sendOrEdit(message: MessageAdapter?, channelAdapter: MessageChannelAdapter, messageRequest: MessageRequest): MessageAdapter {

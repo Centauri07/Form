@@ -11,7 +11,8 @@ object FormManager {
         .expireAfterAccess(3, TimeUnit.MINUTES)
         .removalListener<Long, Form> {
             if (it.cause == RemovalCause.EXPIRED) {
-                it.value?.expire()
+                it.value?.cancel("You have been inactive for 3 minutes, we're now cancelling this session.")
+                it.value?.let { form -> form.model.onExpire(form) }
             }
         }
         .build()
