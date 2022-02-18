@@ -13,7 +13,7 @@ import me.centauri07.form.field.option.OptionField
  */
 class SelectionField(name: String, required: Boolean, options: MutableList<SelectionOption>.() -> Unit): OptionField<SelectionOption>(name, required, options) {
     override fun inquire(): MessageRequest = MessageRequest(
-        embeds = mutableListOf(Embed("${this.name} - Please select one of the options.")),
+        embeds = mutableListOf(Embed("${this.name} - Select one of the options.")),
         selectionMenu = SelectionMenu("SF-${this.name}", name.toString(), options)
     )
 }
