@@ -97,9 +97,10 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
     }
 
     fun cancel(reason: String?) {
-        sendOrEdit(message, channel, MessageRequest(embeds = mutableListOf(Embed("Session has been canceled.", reason))))
-
         FormManager.removeForm(userId)
+        FormManager.removeAcknowledge(userId)
+
+        sendOrEdit(message, channel, MessageRequest(embeds = mutableListOf(Embed("Session has been canceled.", reason))))
     }
 
     fun sendOrEdit(message: MessageAdapter?, channelAdapter: MessageChannelAdapter, messageRequest: MessageRequest): MessageAdapter {
