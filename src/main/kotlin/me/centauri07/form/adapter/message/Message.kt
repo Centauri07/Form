@@ -39,8 +39,8 @@ data class Embed(
     val title: String? = null,
     val description: String? = null,
     val color: Color? = null,
-    val footer: String? = null,
-    val authorId: Long? = null,
+    val footer: Footer? = null,
+    val authorUrl: String? = null,
     val fields: List<Field>? = null
 )
 
