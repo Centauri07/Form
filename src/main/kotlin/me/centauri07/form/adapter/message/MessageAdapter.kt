@@ -12,5 +12,5 @@ interface MessageAdapter {
     fun delete()
 
     fun editAfter(amount: Int, unit: TimeUnit, messageRequest: MessageRequest): MessageAdapter
-    fun deleteAfter(amount: Int, unit: TimeUnit, messageRequest: MessageRequest)
+    fun deleteAfter(amount: Int, unit: TimeUnit)
 }
