@@ -41,7 +41,7 @@ open class GroupFormField<T: FormField<*>>(
     override fun getUnacknowledgedField(): FormField<*>? {
         var currentField: FormField<*>? = value?.find { !it.acknowledged }
 
-        while (currentField != null && currentField is NestableField<*> && currentField.required) {
+        while (currentField != null && currentField is NestableField<*> && currentField.required && !currentField.chosen) {
             val field = currentField.getUnacknowledgedField()
 
             if (field == null) {
