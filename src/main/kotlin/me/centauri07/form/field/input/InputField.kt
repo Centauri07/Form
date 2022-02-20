@@ -1,5 +1,6 @@
 package me.centauri07.form.field.input
 
+import me.centauri07.form.adapter.message.Embed
 import me.centauri07.form.adapter.message.Message
 import me.centauri07.form.adapter.message.MessageRequest
 import me.centauri07.form.field.FormField
@@ -32,5 +33,5 @@ class InputField<T>(tClass: Class<T>, name: String, required: Boolean): FormFiel
         }
     }
 
-    override fun inquire(): MessageRequest = MessageRequest("Enter $name")
+    override fun inquire(): MessageRequest = MessageRequest(embeds = mutableListOf(Embed("Enter $name")))
 }
