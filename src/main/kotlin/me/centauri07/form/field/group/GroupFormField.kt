@@ -11,7 +11,7 @@ import me.centauri07.form.field.NestableField
 open class GroupFormField<T: FormField<*>>(
     name: String? = null,
     required: Boolean = true,
-    fields: (MutableList<T>.() -> Unit)?
+    fields: (MutableList<T>.() -> Unit)? = null
 ): FormField<MutableList<T>>(name, required), NestableField<T> {
 
     final override var value: MutableList<T>? = null
@@ -31,9 +31,7 @@ open class GroupFormField<T: FormField<*>>(
     override fun inquire(): MessageRequest {
         return getUnacknowledgedField()?.inquire() ?: MessageRequest(
             embeds = mutableListOf(
-                Embed("An error occurred when executing this command.",
-                    "Please contact a staff or an administrator."
-                )
+                Embed("An error occurred when executing this command.", "Please contact a staff or an administrator.")
             )
         )
     }
