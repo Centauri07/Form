@@ -11,6 +11,5 @@ abstract class FormModel(name: String, val submitOnFinish: Boolean): GroupFormFi
     abstract fun setup(form: Form)
 
     abstract fun onFinish(form: Form)
-    abstract fun onExpire(form: Form)
 
 }
