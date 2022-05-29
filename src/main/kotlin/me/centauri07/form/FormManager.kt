@@ -7,13 +7,23 @@ import me.centauri07.form.adapter.channel.MessageChannelAdapter
 import java.util.concurrent.TimeUnit
 
 object FormManager {
+
     private val forms: Cache<Long, Form> = CacheBuilder.newBuilder()
         .expireAfterAccess(3, TimeUnit.MINUTES)
         .removalListener<Long, Form> {
+
             if (it.cause == RemovalCause.EXPIRED) {
+
                 it.value?.cancel("You have been inactive for 3 minutes, we're now cancelling this session.")
-                it.value?.let { form -> form.model.onExpire(form) }
+
+                it.value?.let { form ->
+                    {
+                        if (form.model is Expireable)
+                            form.model.onExpire(form)
+                    }
+                }
             }
+
         }
         .build()
 
