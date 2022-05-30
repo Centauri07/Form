@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit
  */
 class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAdapter) {
     var lastBump = System.currentTimeMillis()
+        private set
 
     var idle: Boolean = false
 
@@ -39,6 +40,8 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
 
         obj?.let {
             field.call(obj)?.let {
+                lastBump = System.currentTimeMillis()
+
                 if (it.isSuccess) {
                     field.acknowledged = true
                     field.acknowledge?.invoke(this, field)
