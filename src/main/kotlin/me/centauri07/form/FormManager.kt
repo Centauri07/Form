@@ -4,52 +4,57 @@ import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.RemovalCause
 import me.centauri07.form.adapter.channel.MessageChannelAdapter
+import java.awt.Color
+import java.time.Duration
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 object FormManager {
 
-    private val forms: Cache<Long, Form> = CacheBuilder.newBuilder()
-        .expireAfterAccess(3, TimeUnit.MINUTES)
-        .removalListener<Long, Form> {
+    lateinit var defaultColor: Color
+    lateinit var errorColor: Color
 
-            if (it.cause == RemovalCause.EXPIRED) {
+    private val forms: MutableMap<Long, Form> = mutableMapOf()
 
-                it.value?.cancel("You have been inactive for 3 minutes, we're now cancelling this session.")
+    init {
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
+            {
+                for (form in forms) {
 
-                it.value?.let { form ->
-                    {
-                        if (form.model is Expireable)
-                            form.model.onExpire(form)
-                    }
+                    if (form.value.model !is Expireable) continue
+                    if (form.value.lastBump < System.currentTimeMillis() + Duration.ofSeconds(3).toMillis()) continue
+
+                    form.value.cancel("You have been inactive for 3 minutes, we're now cancelling this session.")
+                    (form.value.model as Expireable).onExpire(form.value)
+
                 }
-            }
-
-        }
-        .build()
+            }, 10, 10, TimeUnit.SECONDS
+        )
+    }
 
     fun <T: FormModel> createForm(model: T, channel: MessageChannelAdapter, userId: Long): Form? {
         if (!hasForm(userId)) {
             Form(model, userId, channel).also {
-                forms.put(userId, it)
+                forms[userId] = it
                 it.call()
             }
         }
 
-        return forms.getIfPresent(userId)
+        return forms[userId]
     }
 
     fun removeForm(id: Long) {
-        forms.invalidate(id)
+        forms.remove(id)
     }
 
     fun getForm(id: Long): Form? {
         if (!hasForm(id)) return null
 
-        return forms.getIfPresent(id)
+        return forms[id]
     }
 
     fun hasForm(id: Long): Boolean {
-        return forms.asMap().containsKey(id)
+        return forms.containsKey(id)
     }
 
     private val acknowledgedForms: Cache<Long, Form> = CacheBuilder.newBuilder()

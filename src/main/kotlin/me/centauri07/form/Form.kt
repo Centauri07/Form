@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit
  * @author Centauri07
  */
 class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAdapter) {
+    var lastBump = System.currentTimeMillis()
+
     var idle: Boolean = false
 
     var submitButton: Button = Button(ButtonType.SUCCESS, "form-submit", "✅ Submit")
@@ -46,7 +48,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
                     idle = true
 
                     sendOrEdit(this.message, channel, MessageRequest(
-                        embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message))
+                        embeds = mutableListOf(Embed("You cannot do that!", it.exceptionOrNull()?.message, FormManager.errorColor))
                     )).editAfter(3, TimeUnit.SECONDS, field.inquire()).let { run {
                         idle = false
                         this.message = it
@@ -63,7 +65,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
 
             sendOrEdit(
                 this.message, channel, MessageRequest(
-                    embeds = mutableListOf(Embed("Do you want to enter ${field.name}?")),
+                    embeds = mutableListOf(Embed("Do you want to enter ${field.name}?", color = FormManager.defaultColor)),
                     buttons = mutableListOf(field.yesButton, field.noButton)
                 )
             )
@@ -88,7 +90,8 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
                 message, channel, MessageRequest(
                     embeds = mutableListOf(
                         Embed("Session Finished!",
-                            "Please choose one of the button below whether you want to submit the form or not.")
+                            "Please choose one of the button below whether you want to submit the form or not.",
+                            FormManager.defaultColor)
                     ),
                     buttons = mutableListOf(submitButton, cancelButton)
                 )
@@ -100,7 +103,7 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
         FormManager.removeForm(userId)
         FormManager.removeAcknowledge(userId)
 
-        sendOrEdit(message, channel, MessageRequest(embeds = mutableListOf(Embed("Session has been canceled.", reason))))
+        sendOrEdit(message, channel, MessageRequest(embeds = mutableListOf(Embed("Session has been canceled.", reason, FormManager.errorColor))))
     }
 
     fun sendOrEdit(message: MessageAdapter?, channelAdapter: MessageChannelAdapter, messageRequest: MessageRequest): MessageAdapter {
@@ -114,4 +117,5 @@ class Form(val model: FormModel, val userId: Long, val channel: MessageChannelAd
 
         return msg
     }
+
 }
