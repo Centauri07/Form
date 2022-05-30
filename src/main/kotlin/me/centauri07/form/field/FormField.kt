@@ -8,7 +8,7 @@ import me.centauri07.form.adapter.message.component.button.ButtonType
 /**
  * @author Centauri07
  */
-abstract class FormField<T>(val name: String? = null, val required: Boolean = true) {
+abstract class FormField<T>(val name: String? = null, val description: String? = null, val required: Boolean = true) {
     abstract var value: T?
 
     var validators: MutableList<Validator<T>> = mutableListOf()

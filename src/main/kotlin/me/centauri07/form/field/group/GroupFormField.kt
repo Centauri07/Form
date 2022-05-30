@@ -1,5 +1,6 @@
 package me.centauri07.form.field.group
 
+import me.centauri07.form.FormManager
 import me.centauri07.form.adapter.message.Embed
 import me.centauri07.form.adapter.message.MessageRequest
 import me.centauri07.form.field.FormField
@@ -10,9 +11,10 @@ import me.centauri07.form.field.NestableField
  */
 open class GroupFormField<T: FormField<*>>(
     name: String? = null,
+    description: String? = null,
     required: Boolean = true,
     fields: (MutableList<T>.() -> Unit)? = null
-): FormField<MutableList<T>>(name, required), NestableField<T> {
+): FormField<MutableList<T>>(name, description, required), NestableField<T> {
 
     final override var value: MutableList<T>? = null
 
@@ -31,7 +33,7 @@ open class GroupFormField<T: FormField<*>>(
     override fun inquire(): MessageRequest {
         return getUnacknowledgedField()?.inquire() ?: MessageRequest(
             embeds = mutableListOf(
-                Embed("An error occurred when executing this command.", "Please contact a staff or an administrator.")
+                Embed("An error occurred when executing this command.", "Please contact a staff or an administrator.", FormManager.defaultColor)
             )
         )
     }

@@ -1,5 +1,6 @@
 package me.centauri07.form.field.input
 
+import me.centauri07.form.FormManager
 import me.centauri07.form.adapter.message.Embed
 import me.centauri07.form.adapter.message.Message
 import me.centauri07.form.adapter.message.MessageRequest
@@ -11,7 +12,7 @@ import java.lang.IllegalArgumentException
 /**
  * @author Centauri07
  */
-class InputField<T>(tClass: Class<T>, name: String, required: Boolean): FormField<T>(name, required) {
+class InputField<T>(tClass: Class<T>, name: String, description: String? = null, required: Boolean): FormField<T>(name, description, required) {
     private val reader: InputReader<T>? = InputReaderRegistry.get(tClass)
 
     init {
@@ -33,5 +34,5 @@ class InputField<T>(tClass: Class<T>, name: String, required: Boolean): FormFiel
         }
     }
 
-    override fun inquire(): MessageRequest = MessageRequest(embeds = mutableListOf(Embed("Enter $name")))
+    override fun inquire(): MessageRequest = MessageRequest(embeds = mutableListOf(Embed("Enter $name", description, FormManager.defaultColor)))
 }
