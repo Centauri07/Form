@@ -1,8 +1,5 @@
 package me.centauri07.form
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.RemovalCause
 import me.centauri07.form.adapter.channel.MessageChannelAdapter
 import java.awt.Color
 import java.time.Duration
@@ -22,7 +19,7 @@ object FormManager {
                 for (form in forms) {
 
                     if (form.value.model !is Expireable) continue
-                    if (form.value.lastBump < System.currentTimeMillis() + Duration.ofSeconds(3).toMillis()) continue
+                    if (form.value.lastBump + Duration.ofSeconds(3).toMillis() > System.currentTimeMillis()) continue
 
                     form.value.cancel("You have been inactive for 3 minutes, we're now cancelling this session.")
                     (form.value.model as Expireable).onExpire(form.value)
@@ -57,9 +54,7 @@ object FormManager {
         return forms.containsKey(id)
     }
 
-    private val acknowledgedForms: Cache<Long, Form> = CacheBuilder.newBuilder()
-        .expireAfterAccess(3, TimeUnit.MINUTES)
-        .build()
+    private val acknowledgedForms: MutableMap<Long, Form> = mutableMapOf()
 
     fun setAcknowledge(id: Long) {
         if (hasForm(id) && !hasAcknowledge(id)) {
@@ -71,14 +66,14 @@ object FormManager {
     }
 
     fun removeAcknowledge(id: Long) {
-        acknowledgedForms.invalidate(id)
+        acknowledgedForms.remove(id)
     }
 
     fun getAcknowledge(id: Long): Form? {
-        return acknowledgedForms.getIfPresent(id)
+        return acknowledgedForms[id]
     }
 
     fun hasAcknowledge(id: Long): Boolean {
-        return acknowledgedForms.asMap().containsKey(id)
+        return acknowledgedForms.containsKey(id)
     }
 }
