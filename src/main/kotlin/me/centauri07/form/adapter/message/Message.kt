@@ -11,15 +11,7 @@ data class Message(
     val id: Long,
     val channel: Channel,
     val authorId: Long,
-    val memberId: Long?,
-    val content: String,
-    val mentions: List<Long>? = null,
-    val mentionedRoles: List<Long>? = null,
-    val mentionedChannels: List<Channel>? = null,
-    val embeds: List<Embed>? = null,
-    val buttons: List<Button>? = null,
-    val selectionMenu: SelectionMenu? = null,
-    val pinned: Boolean
+    val content: String
 )
 
 data class MessageRequest(
@@ -31,7 +23,6 @@ data class MessageRequest(
 
 data class Channel(
     val id: Long,
-    val guildId: Long? = null,
     val name: String
 )
 
